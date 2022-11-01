@@ -1,0 +1,163 @@
+{%extends 'trainee_index.html'%} {% load static %} {% block content %}
+
+<style>
+    table tbody tr[data-href] {
+        cursor: pointer;
+    }
+</style>
+
+<div class="row" style="padding-top: 20px;">
+    <div class="col-2 col-sm-2 col-md-2 col-lg-2"></div>
+    <div class="col-12 col-sm-8 col-md-8 col-lg-8 grid-margin ">
+        <div class="card">
+            <div class="card-body" style="height:auto">
+                <div class="col-12 col-sm-12 col-md-12 col-lg-6">
+                    <h3 class="page-title ">Task List</h3>
+                </div>
+                <div class="col-12 col-sm-12 col-md-12 col-lg-12"><br></div>
+                <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                    <form>
+                        <div class="input-group input-group-sm mb-3">
+                            <input type="text" class="form-control text-white" id="myInput" onkeyup="myFunction()" placeholder="Search" />
+                        </div>
+                    </form>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table" id="myTable">
+                        <thead>
+                            <tr data-href="#">
+                                <th class="text-white " style="padding-left:36px;">SNo</th>
+                                <th class="text-white">
+                                    Task
+                                </th>
+                                <th class="text-white">
+                                    Start Date
+                                </th>
+                                <th class="text-white">
+                                    End Date
+                                </th>
+                                <th class="text-white">
+                                    Verification
+                                </th>
+                                <th class="text-white">
+                                    Correction
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                            <br> {% for i in mem %}
+                            <tr >
+                                <!-- data-href="{% url 'trainee_task_details' i.id %} " -->
+
+                                <td style="padding-left:40px;">
+                                    {{forloop.counter }}
+                                </td>
+
+                                <td>
+                                    {{i.taskname}}
+                                </td>
+                                <td>
+                                    {{i.startdate|date:"d-m-Y"}}
+                                </td>
+                                <td>
+                                    {{i.enddate|date:"d-m-Y"}}
+                                </td>
+                                <td><a href="{% url 'trainee_task_details' i.id %} ">
+
+                                    {% if i.task_status == '0' %}
+
+                                    <div class="badge badge-outline-danger" style="width: 135px;">
+                                        <i class="mdi mdi-playlist-remove"></i>&nbsp;
+                                        Not Submitted
+                                    </div>
+                                    {% elif i.task_status == '2' %}
+
+                                    <div class="badge badge-outline-warning" style="width: 135px;">
+                                        <i class="mdi mdi-playlist-check"></i>&nbsp;
+                                        Pending
+                                    </div>
+
+                                    {%else %}
+
+                                    <div class="badge badge-outline-success" style="width: 135px;">
+                                        <i class="mdi mdi-playlist-check"></i>&nbsp;
+                                        Submitted
+                                    </div>
+                                    {% endif %}
+                                </a></td>
+                                
+                           
+                            
+                            <td>
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal{{  i.id }}">Incompleted</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+
+
+<!-- Button trigger modal -->
+{% for i in mem %}  
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal{{i.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+      <div class="modal-content modal-xl" style="background-color: #191c24;">
+        <div class="modal-header">
+            <h5 class="modal-title text-info">Incompleted Report</h5>
+            
+              
+          </div>
+          <div class="table-responsive mt-3 mb-3 container">
+  
+            <table class="table  table-bordered ">
+              <thead style="background-color: black;">
+                <tr>
+                    <th scope="col" style="color:#6C7293;">Date</th>
+                    <th scope="col" style="color:#6C7293;">Corrections</th>
+                  
+                  <th scope="col" style="color:#6C7293;">Files</th>
+                  
+                </tr>
+              </thead>
+  
+              <tbody>
+                
+  
+                
+  
+                {% for a in mem %}
+                <tr>
+                    <!-- <td style="color: white;">{{i.correction_date|date:'d-m-Y'}}</td> -->
+                    <td style="color:white;">{{i.correction_date|date:" d-m-Y" }}</td>
+                    <td style="color:white;"><input type="text" value="{{ a.verification}}"   class="form-control"
+                        style="width:180px;height: 75px;"></input></td>
+                       
+                        <td>   <a href="{{a.correction_files.url}} " download="{{a.verification}}">
+                            <div class="badge badge-outline-info">Download</div></td>
+                        </a> 
+                        
+                </tr>
+  {% endfor %}
+  
+               
+              </tbody>
+            </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+{%endblock%}
