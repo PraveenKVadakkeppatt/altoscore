@@ -480,7 +480,9 @@ def teamdelete1(request):
     var = create_team.objects.filter(id=tid)
     
     var.delete()
-    return redirect("new_team_name")
+    return redirect("new_team")
+
+
 
 def submit(request):
     if request.session.has_key('usernametm'):
@@ -496,6 +498,36 @@ def submit(request):
         
         var1.save()
     return redirect("new_team")
+
+
+def submit2(request,submitid):
+    if request.session.has_key('usernametm'):
+        usernametm = request.session['usernametm']
+    if request.session.has_key('usernametm1'):
+        usernametm1 = request.session['usernametm1']
+    else:
+        return redirect('/')
+    if request.method == 'POST':
+        var1 = previousTeam.objects.get(id=submitid)
+        ct=create_team.objects.get(id=var1.teamname.id)
+        print(ct.enddate)
+        print(var1.trainee_enddate)
+        delay=date.today() - ct.enddate
+        cnt =  Event.objects.filter(start_time__range=(ct.enddate,date.today())).count()
+        dl=delay.days
+        dl=dl-cnt
+        ddl=user_registration.objects.get(id=var1.user.id)
+        if dl<0:
+        
+            ddl.trainee_delay=0
+
+            ddl.save()
+        else:
+            ddl.trainee_delay=dl
+            ddl.save()
+        
+    return redirect("new_team")
+
 
 # def teamupdate(request):
 #     if request.session.has_key('usernametm'):
@@ -542,7 +574,7 @@ def teamupdate(request):
     else:
         pass
 
-def teamupdate1(request):
+def teamupdate1(request,id):
     if request.session.has_key('usernametm'):
         usernametm = request.session['usernametm']
     if request.session.has_key('usernametm1'):
@@ -550,16 +582,17 @@ def teamupdate1(request):
     else:
         return redirect('/')
     if request.method == 'POST':
-        tid = request.GET.get('tid')
-        a= request.POST.get('trainer')
+        # tid = request.GET.get('tid')
+        # a= request.POST.get('trainer')
         
-        abc = create_team.objects.get(id=tid)
+        # abc = create_team.objects.get(id=id)
+        abc = team_batch.objects.get(id=id)
         abc.name = request.POST.get('teams')
         abc.trainer_id = request.POST.get('trainer')
-        abc.startdate = request.POST.get('startdate')
-        abc.enddate = request.POST.get('enddate')
-        tra= user_registration.objects.get(id=a)
-        abc.trainer = tra.fullname
+        abc.tb_startdate = request.POST.get('startdate')
+        abc.tb_enddate = request.POST.get('enddate')
+        # tra= user_registration.objects.get(id=a)
+        # abc.trainer = tra.fullname
 
         abc.save()
         return redirect('new_team')
@@ -567,28 +600,24 @@ def teamupdate1(request):
         pass
 
 def teamupdate2(request,id):
-    # if request.session.has_key('usernametm'):
-    #     usernametm = request.session['usernametm']
-    # if request.session.has_key('usernametm1'):
-    #     usernametm1 = request.session['usernametm1']
-    # else:
-    #     return redirect('/')
+    if request.session.has_key('usernametm'):
+        usernametm = request.session['usernametm']
+    if request.session.has_key('usernametm1'):
+        usernametm1 = request.session['usernametm1']
+    else:
+        return redirect('/')
     if request.method == 'POST':
         
         a= request.POST.get('trainer')
         
-        abc = create_team.objects.filter(id=id)
-        abc.name = request.POST.get('teams')
-        abc.trainer_id = request.POST.get('trainer')
-        abc.startdate = request.POST.get('startdate')
-        abc.enddate = request.POST.get('enddate')
-        tra= user_registration.objects.get(id=a)
-        abc.trainer = tra.fullname
+        abc = previousTeam.objects.get(id=id)
+        abc.trainee_startdate = request.POST['startdate']
+        abc.trainee_enddate = request.POST['enddate']
 
         abc.save()
         return redirect('new_team')
-    # else:
-    #     pass
+    else:
+        pass
 
 def trainee_new_team(request,tm_id):
     if 'usernametm2' in request.session:
@@ -615,6 +644,20 @@ def trainee_new_team(request,tm_id):
         return redirect('/')
 
 
+
+def trainee_date_update(request,tdu):
+    if 'usernametm2' in request.session:
+        if request.session.has_key('usernametm'):
+            usernametm = request.session['usernametm']
+        if request.session.has_key('usernametm1'):
+            usernametm1 = request.session['usernametm1']
+        else:
+            return redirect('/')
+        mem = user_registration.objects.filter(
+            designation_id=usernametm) .filter(fullname=usernametm1)
+        tdd=previousTeam.objects.get(id=tdu)
+
+    return render(request, 'trainee_date_update.html',{'mem':mem,'tdd':tdd})
 
 
 
@@ -2263,6 +2306,7 @@ def trainer_givetask(request, id):
 
     else:
         return redirect('/')
+
 def trainer_taskgivenpage(request, id):
     if 'usernametrnr2' in request.session:
        
@@ -2384,7 +2428,7 @@ def trainer_task_previous_teamlist(request):
         tam = create_team.objects.filter(trainer_id=usernametrnr2,status=1).order_by('-id')
         des = designation.objects.get(designation='trainee')
         cut = user_registration.objects.filter(designation_id=des.id)
-
+        print('hai',tam)
         return render(request, 'trainer_task_previous_teamlist.html', {'z': z, 'cut': cut, 'tam': tam})
     else:
         return redirect('/')

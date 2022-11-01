@@ -142,9 +142,10 @@
                     <td style="color:white;"><input type="text" value="{{ a.verification}}"   class="form-control"
                         style="width:180px;height: 75px;"></input></td>
                        
-                        <td>   <a href="{{a.correction_files.url}} " download="{{a.verification}}">
+                        <td>   {% if a.correction_files %}
+                             <a href="{{a.correction_files.url}} " download="{{a.verification}}">
                             <div class="badge badge-outline-info">Download</div></td>
-                        </a> 
+                        </a> {%endif%}
                         
                 </tr>
   {% endfor %}

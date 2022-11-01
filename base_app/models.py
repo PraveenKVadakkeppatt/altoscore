@@ -61,6 +61,7 @@ class team_batch(models.Model):
      tb_enddate = models.DateField(auto_now_add=False, auto_now=False,  null=True, blank=True)
      tb_progress = models.IntegerField()
      tb_status = models.CharField(max_length=200,default='0')
+
           
 
 
@@ -196,6 +197,8 @@ class previousTeam(models.Model):
     user =  models.ForeignKey(user_registration, on_delete=models.SET_NULL, related_name='user1',null=True,blank=True)
     pstatus = models.CharField(max_length=200)
     progress = models.IntegerField(default='0')
+    trainee_startdate = models.DateField(auto_now_add=False, auto_now=False,  null=True, blank=True)
+    trainee_enddate = models.DateField(auto_now_add=False, auto_now=False,  null=True, blank=True)
 
 
 class topic(models.Model):

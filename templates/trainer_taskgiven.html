@@ -273,9 +273,12 @@
 
                                 <td style="color:white;">{{ a.verification}}</td>
                                     
-                                <td>   <a href="{{a.correction_files.url}} " download="{{a.verification}}">
+                                <td>   
+                                    {% if a.correction_files %}
+                                    <a href="{{a.correction_files.url}} " download="{{a.verification}}">
                                         <div class="badge badge-outline-info">Download</div></td>
                                     </a>
+                                    {%endif%}
                                     <td>
 
                                     </td>

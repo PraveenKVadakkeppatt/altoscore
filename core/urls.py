@@ -38,11 +38,17 @@ urlpatterns = [
     path('new_team_name', views.new_team_name, name='new_team_name'),
     path('newteam_name_create', views.newteam_name_create, name='newteam_name_create'),
     path('trainee_new_team/<int:tm_id>', views.trainee_new_team, name='trainee_new_team'),
+    path('trainee_date_update/<int:tdu>', views.trainee_date_update, name='trainee_date_update'),
+
     re_path(r'^teamdelete/$', views.teamdelete, name='teamdelete'),
+    re_path(r'^teamdelete1/$', views.teamdelete1, name='teamdelete1'),
+
     re_path(r'^teamupdate/$', views.teamupdate, name='teamupdate'),
     re_path(r'^teamupdate2/(?P<id>\d+)$', views.teamupdate2, name='teamupdate2'),
-
+    re_path(r'^teamupdate1/(?P<id>\d+)$', views.teamupdate1, name='teamupdate1'),
     re_path(r'^submit/$', views.submit, name='submit'),
+    path('submit2/<int:submitid>', views.submit2, name='submit2'),
+
     re_path(r'^reportedissue/$', views.reportedissue, name='reportedissue'),
     re_path(r'^reportissuetrainers/$', views.reportissuetrainers,
             name='reportissuetrainers'),
